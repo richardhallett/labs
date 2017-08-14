@@ -7,7 +7,9 @@ In addition it includes other celular automata that are also interesting.
 ## Requirements
 
 	* Python 3 or newer
-	* Pyglet 1.2 alpha or newer (For Python 3 support)
+	* Pyglet 1.2
+
+Run 'pip install -r requirements.txt'
 
 ## Controls
 	* F1 - Pauses the update tick for the game.
