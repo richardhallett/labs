@@ -587,7 +587,7 @@ def write_interop(filename, namespace, features, extensions, functions, unsafe=F
     # GL Core file
     gl_core_string = None
     padding = '        '
-    with open('template.cs', 'r') as f:
+    with open('template.txt', 'r') as f:
         gl_core_template = Template(f.read())
 
         # Build the string for all the features we're writing out
