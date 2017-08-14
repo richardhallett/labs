@@ -24,3 +24,11 @@ Run 'pip install -r requirements.txt'
 	* 4 - Switch to the Cave generation simulation.
 	* G - Load the premade glider gun pattern.
 	* Mouse click - Toggles through the various states for the current simulations on target cell, only works when the game is paused.
+	
+## Example
+
+Game of life
+![alt text](https://raw.githubusercontent.com/richardhallett/labs/master/gameoflife/gameoflife.gif "Game of life example run")
+
+Game of life with the preconfigured "Glider Gun" example
+![alt text](https://raw.githubusercontent.com/richardhallett/labs/master/gameoflife/glider.gif "Game of life example run")
