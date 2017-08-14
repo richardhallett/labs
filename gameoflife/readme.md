@@ -27,8 +27,8 @@ Run 'pip install -r requirements.txt'
 	
 ## Example
 
-Game of life
+### Game of life
 ![alt text](https://raw.githubusercontent.com/richardhallett/labs/master/gameoflife/gameoflife.gif "Game of life example run")
 
-Game of life with the preconfigured "Glider Gun" example
+### "Glider Gun" example
 ![alt text](https://raw.githubusercontent.com/richardhallett/labs/master/gameoflife/glider.gif "Game of life example run")
