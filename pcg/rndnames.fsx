@@ -1,3 +1,5 @@
+// Generate names using markov chains
+
 let femaleFirstnames = 
     "Aimee Aleksandra Alice Alicia Allison Alyssa Amy Andrea Angel Angela \
     Ann Anna Anne Anne Marie Annie Ashley Barbara Beatrice Beth Betty \

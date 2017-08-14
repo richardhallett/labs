@@ -1,3 +1,5 @@
+# Generates random names using markov chains
+
 import random
 
 
