@@ -1,0 +1,2 @@
+GL_NV_vertex_program
+GL_ARB_bindless_texture
