@@ -1,111 +1,148 @@
-""" A python implementation of John Conway's Game of life and other cellular automaton
+""" A python implementation of John Conway's Game of life and other
+cellular automaton
 
-This is not designed to be highly performant, more as a demonstration of the basic logic.
+This is not designed to be highly performant, more as a demonstration of the
+basic logic.
 
 .. moduleauthor:: Richard Hallett
 
 """
 
 from grid import Grid, GridRenderer
-
 import pyglet
-pyglet.options['shadow_window'] = False # Pyglet decides for (imo) silly reasons to create the opengl context in a seperate shadow window 
-                                        # so it's available before you actually create a window, this causes some crashes on certain cards                                       
-import random
+# Pyglet decides for (imo) silly reasons to create the opengl context
+# in a seperate shadow window so it's available before you actually create a
+# window, this causes some crashes on certain cards
+pyglet.options['shadow_window'] = False
+
 
 class CellularAutomata():
     """ Base class for Cellular Automaton """
-    def tick(self):        
-        new_cells = self.grid.cells[:] # We make a copy of the grid cells that we are going to change
+
+    def tick(self):
+        # We make a copy of the grid cells that we are going to change
+        new_cells = self.grid.cells[:]
 
         for x in range(self.grid.width):
-            for y in range(self.grid.height):    
-                new_state = self.rule(x, y) # Using the rules from the simulation get a new state for this cell
+            for y in range(self.grid.height):
+                # Using the rules from the simulation get a new state for
+                # this cell
+                new_state = self.rule(x, y)
                 index = x + y * self.grid.width
                 new_cells[index] = new_state
 
-        self.grid.cells = new_cells # Old state becomes the new state
+        # Old state becomes the new state
+        self.grid.cells = new_cells
+
 
 class Conways(CellularAutomata):
     """ An implementation of Conways game of life """
 
     def __init__(self, width, height):
-        self.active = True # Is the game running or not.
+        self.active = True  # Is the game running or not.
         self.grid = Grid(width, height)
-        self.grid.randomise() # Start with some randomness
+        self.grid.randomise()  # Start with some randomness
 
     def rule(self, x, y):
-        cell_state = self.grid.get_cell(x, y) # The cell we are currently looking at
-        new_state = cell_state # This will become our new state depending on below logic, we'll start it with the same state as it was
-        neighbours = self.grid.get_neighbours(x, y) # The neighbours for this cell
-        live_neighbours = len([n for n in neighbours if n == 1]) # The amount of live neighbours for this cell
-                            
+        # The cell we are currently looking at
+        cell_state = self.grid.get_cell(x, y)
+        # This will become our new state depending on below logic,
+        # we'll start it with the same state as it was
+        new_state = cell_state
+        # The neighbours for this cell
+        neighbours = self.grid.get_neighbours(x, y)
+        # The amount of live neighbours for this cell
+        live_neighbours = len([n for n in neighbours if n == 1])
+
         if cell_state == 1:
             # Live cells
             if live_neighbours < 2:
-                # Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+                # Any live cell with fewer than two live neighbours dies,
+                # as if caused by under-population.
                 new_state = 0
             elif live_neighbours == 2 or live_neighbours == 3:
-                # Any live cell with two or three live neighbours lives on to the next generation.
+                # Any live cell with two or three live neighbours lives on
+                # to the next generation.
                 new_state = 1
             elif live_neighbours > 3:
-                # Any live cell with more than three live neighbours dies, as if by overcrowding.
+                # Any live cell with more than three live neighbours dies,
+                # as if by overcrowding.
                 new_state = 0
         else:
             # Dead cells
             if live_neighbours == 3:
-                # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+                # Any dead cell with exactly three live neighbours becomes a
+                # live cell, as if by reproduction.
                 new_state = 1
 
         return new_state
-  
+
+
 class Seeds(CellularAutomata):
     """ An implementation of the cellular automaton named Seeds """
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.grid = Grid(width, height)        
-        
+        self.grid = Grid(width, height)
+
         centre_x, centre_y = width / 2, height / 2
         self.grid.set_cell(centre_x, centre_y, True)
         self.grid.set_cell(centre_x + 1, centre_y, True)
         self.grid.set_cell(centre_x, centre_y + 1, True)
 
     def rule(self, x, y):
-        cell_state = self.grid.get_cell(x, y) # The cell we are currently looking at        
-        neighbours = self.grid.get_neighbours(x, y) # The neighbours for this cell          
+        # The cell we are currently looking at
+        cell_state = self.grid.get_cell(x, y)
+        # The neighbours for this cell
+        neighbours = self.grid.get_neighbours(x, y)
 
-        new_state = cell_state # This will become our new state depending on below logic, we'll start it with the same state as it was
-        live_neighbours = len([n for n in neighbours if n == 1]) # The amount of live (i.e. boolean true) neighbours for this cell
-                                    
-        if cell_state == 0: # If the cell is dead
-            if live_neighbours == 2: # And it had two living neighbours
-                new_state = 1 # Then bring it to life (born)
+        # This will become our new state depending on below logic, we'll
+        # start it with the same state as it was
+        new_state = cell_state
+        # The amount of live (i.e. boolean true) neighbours for this cell
+        live_neighbours = len([n for n in neighbours if n == 1])
+
+        # If the cell is dead
+        if cell_state == 0:
+            # And it had two living neighbours
+            if live_neighbours == 2:
+                # Then bring it to life (born)
+                new_state = 1
         else:
             # All other cells are off (dead)
             new_state = 0
 
         return new_state
 
+
 class BriansBrain(CellularAutomata):
     """ An implementation of the cellular automata Brian's Brain """
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        states = [0, 1, 2] # 0 = Dead, 1 = Alive, 2 = Dying
-        self.grid = Grid(width, height, states = states)                
-        self.grid.randomise() # Start with some randomness
+        # 0 = Dead, 1 = Alive, 2 = Dying
+        states = [0, 1, 2]
+        self.grid = Grid(width, height, states=states)
+        # Start with some randomness
+        self.grid.randomise()
 
     def rule(self, x, y):
-        cell_state = self.grid.get_cell(x, y) # The cell we are currently looking at        
-        neighbours = self.grid.get_neighbours(x, y) # The neighbours for this cell          
+        # The cell we are currently looking at
+        cell_state = self.grid.get_cell(x, y)
+        # The neighbours for this cell
+        neighbours = self.grid.get_neighbours(x, y)
 
-        new_state = cell_state # This will become our new state depending on below logic, we'll start it with the same state as it was
-        live_neighbours = len([n for n in neighbours if n == 1]) # The amount of live neighbours for this cell
-                          
-        if cell_state == 0: # If the cell is dead
-            if live_neighbours == 2: # And it had two living neighbours
-                new_state = 1 # Then bring it to life (born)
+        # This will become our new state depending on below logic,
+        # we'll start it with the same state as it was
+        new_state = cell_state
+        # The amount of live neighbours for this cell
+        live_neighbours = len([n for n in neighbours if n == 1])
+
+        if cell_state == 0:  # If the cell is dead
+            if live_neighbours == 2:  # And it had two living neighbours
+                new_state = 1  # Then bring it to life (born)
         elif cell_state == 1:
             # All currently alive cells start to die
             new_state = 2
@@ -115,33 +152,38 @@ class BriansBrain(CellularAutomata):
 
         return new_state
 
+
 class CaveGeneration(CellularAutomata):
     """ An example of using cellular automata to generate cave systems """
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.grid = Grid(width, height)                
-        self.grid.randomise() # Start with some randomness
+        self.grid = Grid(width, height)
+        # Start with some randomness
+        self.grid.randomise()
 
     def rule(self, x, y):
         cell_state = self.grid.get_cell(x, y)
         neighbours = self.grid.get_neighbours(x, y)
 
         new_state = cell_state
-        live_neighbours = len([n for n in neighbours if  n == 1])
-             
-        # B678/S345678      
+        live_neighbours = len([n for n in neighbours if n == 1])
+
+        # B678/S345678
         if cell_state == 0:
-            if live_neighbours in [6,7,8]:
+            if live_neighbours in [6, 7, 8]:
                 new_state = 1
         else:
-            if not live_neighbours in [3,4,5,6,7,8]:
+            if live_neighbours not in [3, 4, 5, 6, 7, 8]:
                 new_state = 0
 
         return new_state
 
+
 class Game():
     """ General handler for running cellular automata games """
+
     def __init__(self, width, height, grid_size=8):
         self.width = width
         self.height = height
@@ -167,30 +209,31 @@ class Game():
         if name == 'conways':
             self.simulation = Conways(self.width, self.height)
             self.grid_renderer.cell_colour_map = {
-                                                  0: (3,80,150,255), 
-                                                  1: (125, 249, 255, 255)
-                                                  }
+                0: (3, 80, 150, 255),
+                1: (125, 249, 255, 255)
+            }
         elif name == 'seeds':
             self.simulation = Seeds(self.width, self.height)
             self.grid_renderer.cell_colour_map = {
-                                                  0: (3,80,150,255), 
-                                                  1: (125, 249, 255, 255)
-                                                  }
+                0: (3, 80, 150, 255),
+                1: (125, 249, 255, 255)
+            }
         elif name == 'briansbrain':
             self.simulation = BriansBrain(self.width, self.height)
             self.grid_renderer.cell_colour_map = {
-                                                  0: (3,80,150,255), 
-                                                  1: (255, 255, 255, 255),
-                                                  2: (125, 249, 255, 255),
-                                                  }
+                0: (3, 80, 150, 255),
+                1: (255, 255, 255, 255),
+                2: (125, 249, 255, 255),
+            }
         elif name == 'cave':
             self.simulation = CaveGeneration(self.width, self.height)
             self.grid_renderer.cell_colour_map = {
-                                                  0: (3,80,150,255), 
-                                                  1: (125, 249, 255, 255)
-                                                  }
+                0: (3, 80, 150, 255),
+                1: (125, 249, 255, 255)
+            }
 
-def main():       
+
+def main():
     width = 800
     height = 600
     window = pyglet.window.Window(width, height, vsync=False)
@@ -214,7 +257,8 @@ def main():
             game.simulation.grid.randomise()
 
         if symbol == pyglet.window.key.F4:
-            game.grid_renderer.draw_grid_lines = not game.grid_renderer.draw_grid_lines
+            game.grid_renderer.draw_grid_lines = \
+                not game.grid_renderer.draw_grid_lines
 
         if symbol == pyglet.window.key.F5:
             game.simulation.grid.save('saved_state.txt')
@@ -227,7 +271,7 @@ def main():
 
         if symbol == pyglet.window.key._2:
             game.run_sim('seeds')
-        
+
         if symbol == pyglet.window.key._3:
             game.run_sim('briansbrain')
 
@@ -238,33 +282,39 @@ def main():
             game.simulation.grid.read('glider_gun.txt')
 
     @window.event
-    def on_mouse_press(x, y, button, modifiers):        
+    def on_mouse_press(x, y, button, modifiers):
         # If the game isn't running allow user to manually fill the grid.
         if not game.active:
             cell_x = x / scale
             cell_y = y / scale
             states = game.simulation.grid.states[:]
             current_state = game.simulation.grid.get_cell(cell_x, cell_y)
-            current_index = states.index(current_state) # Get the current index in the grid states
+            # Get the current index in the grid states
+            current_index = states.index(current_state)
 
-            states = states[current_index+1:] + states[:current_index+1] # Rotate the list of states starting from the next one on from the current state
+            # Rotate the list of states starting from the next one on
+            # from the current state
+            states = states[current_index + 1:] + states[:current_index + 1]
 
-            # Set the cell to be whatever the next state index would be after we've rotated.
+            # Set the cell to be whatever the next state index would
+            # be after we've rotated.
             game.simulation.grid.set_cell(cell_x, cell_y, states[0])
 
     @window.event
     def on_draw():
-        window.clear()                
+        window.clear()
         game.draw()
-    
-    def update(dt):         
-        # Step the game on  
+
+    def update(dt):
+        # Step the game on
         if game.active:
             game.tick()
 
-    # Call main update every 1000th of a second so we can see things progressing easier.
+    # Call main update every 1000th of a second
+    # so we can see things progressing easier.
     pyglet.clock.schedule_interval(update, 0.1)
     pyglet.app.run()
+
 
 if __name__ == '__main__':
     main()
